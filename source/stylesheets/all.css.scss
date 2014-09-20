@@ -1,9 +1,43 @@
 @charset "utf-8";
+@import 'compass';
+
 @-ms-viewport {width: device-width;}
     @viewport {width: device-width;}
 
-@import 'compass';
-@import "normalize.css";
+//
+// Normalization & resets for annoyances
+
+@import "normalize";
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video,
+main {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 1em;
+}
+
+input, textarea, button, select {
+  margin: 0;
+  font-size: 1em;
+  line-height: inherit;
+  vertical-align: baseline;
+  font-family: inherit;
+}
+
+textarea { resize: vertical; }
 
 //
 // Em conversion functions
@@ -25,18 +59,11 @@ $line-height: 24;
 }
 
 //
-// Resetting annoying things
-
-* {
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-//
 // Variables
 
-
+$card-width: 100vw;
+$card-height: 100vh;
+$card-gap: 2vw;
 
 //
 // Typography
@@ -63,10 +90,9 @@ $hue-910: $hue-main + (360 * 0.910);
 $hue-854: $hue-main + (360 * 0.854);
 $hue-764: $hue-main + (360 * 0.764);
 $hue-618: $hue-main + (360 * 0.618);
-
 $hue-382: $hue-main + (360 * 0.382);
 $hue-236: $hue-main + (360 * 0.236);
-$hue-136: $hue-main + (360 * 0.136);
+$hue-136: $hue-main + (360 * 0.146);
 $hue-090: $hue-main + (360 * 0.090);
 $hue-056: $hue-main + (360 * 0.056);
 $hue-034: $hue-main + (360 * 0.034);
@@ -114,13 +140,15 @@ body {
   background: $background;
   color: $body;
   -webkit-tap-highlight-color: transparentize($link, 0.5);
+  margin: 0 auto;
 }
 
 a {
   color: $link;
   text-decoration: none;
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: $emphasis;
   }
 
@@ -144,4 +172,128 @@ code {
 
 /////////////////////////////////////////////////////////
 
-// Tabula rasa!
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+
+}
+
+.canvas-container {
+  @include perspective($card-width);
+  @include perspective-origin(left top);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.canvas {
+  @include transition(all 0.414s ease-in-out);
+  @include transform-origin(0%, 0%);
+  @include transform-style(preserve-3d);
+  position: absolute;
+  left: 0; top: 0;
+  @include scale(1);
+  display: inline-block;
+}
+
+.card-row {
+  white-space: nowrap;
+}
+
+.card-row-heading {
+  margin: $card-gap*2 $card-gap $card-gap;
+
+  h1 {
+    font-size: $card-height * 0.146;
+    line-height: 1;
+  }
+}
+
+.card {
+  position: relative;
+  width: $card-width;
+  height: $card-height;
+  display: inline-block;
+  vertical-align: top;
+
+  &.card-half {
+    width:  $card-width  * 0.5;
+    height: $card-height * 0.5;
+  }
+
+  &.card-quarter {
+    width:  $card-width  * 0.25;
+    height: $card-height * 0.25;
+  }
+}
+
+.card-overlay-button {
+  cursor: pointer;
+  display: none;
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  z-index: 3500;
+
+  &:hover {
+    background: transparentize($link, 0.618);
+  }
+
+  .panning-mode & {
+    display: block;
+  }
+}
+
+.card-wrapper {
+  background: $highlight;
+  position: absolute;
+  left: 0; top: 0;
+  width: $card-width;
+  height: $card-height;
+  @include transform-origin(0%, 0%);
+  @include transform-style(preserve-3d);
+  @include scale3d(1, 1, 1);
+  @include transition(all 0.1s ease-out);
+
+  .card-half & {
+    @include scale3d(0.5, 0.5, 0.5);
+  }
+
+  .card-quarter & {
+    @include scale3d(0.25, 0.25, 0.25);
+  }
+
+  h1 {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    font-size: $card-height * 0.1;
+    line-height: 1;
+    height: 1em;
+    width: 5em;
+    text-align: center;
+    margin: auto;
+  }
+}
+
+.overlay {
+  position: absolute;
+  left: 0; top: 0;
+}
+
+.panning-overlay-button {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3500;
+  display: none;
+  cursor: -webkit-zoom-in;
+  cursor: zoom-in;
+
+  .birds-eye-mode & {
+    display: block;
+  }
+}

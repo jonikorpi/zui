@@ -1,5 +1,39 @@
 ---
-title: Welcome to Middleman
+title: ZUI Prototype Calamity
 ---
 
-%h1 hello
+.canvas-container
+
+  .canvas{"data-scale" => 1}><
+
+    .card-row><
+      .card-row-heading
+        %h1 Half cards
+      - 6.times do
+        .card.card-half
+          .card-overlay-button
+          .card-wrapper
+            %h1= rand(1..999)
+
+    .card-row><
+      .card-row-heading
+        %h1 Quarter cards
+      - 6.times do
+        .card.card-quarter
+          .card-overlay-button
+          .card-wrapper
+            %h1= rand(1..999)
+
+    .card-row><
+      .card-row-heading
+        %h1 Whole cards
+      - 3.times do
+        .card
+          .card-overlay-button
+          .card-wrapper
+            %h1= rand(1..999)
+
+.overlay
+  %button#birds-eye Bird's eye
+  %button#panning Panning
+.panning-overlay-button
