@@ -182,7 +182,7 @@ body {
 
 }
 
-.canvas-container {
+.viewport {
   @include perspective($card-width);
   @include perspective-origin(left top);
   height: 100%;
@@ -191,7 +191,7 @@ body {
 }
 
 .canvas {
-  @include transition(all 0.414s ease-in-out);
+  @include transition(all 0.414s ease-out);
   @include transform-origin(0%, 0%);
   @include transform-style(preserve-3d);
   position: absolute;

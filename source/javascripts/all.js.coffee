@@ -40,14 +40,14 @@ $ ->
   $("#birds-eye").on "click", (event) ->
     $("body").removeClass("birds-eye-mode panning-mode").addClass("birds-eye-mode")
     currentScale = $(".canvas").data("scale")
-    scale = $(".canvas-container").width() / $(".canvas").width() * 0.944
+    scale = $(".viewport").width() / $(".canvas").width() * 0.944
     transformTo($(".canvas"), scale)
     $(".canvas").data("scale", scale)
 
   $("#panning, .panning-overlay-button").on "click", (event) ->
     $("body").removeClass("birds-eye-mode panning-mode").addClass("panning-mode")
     currentScale = $(".canvas").data("scale")
-    scale = $(".canvas-container").width() / $(".card-wrapper").width() * 0.5
+    scale = $(".viewport").width() / $(".card-wrapper").width() * 0.5
     x = "#{event.pageX / currentScale}px"
     y = "#{event.pageY / currentScale}px"
     transformTo($(".canvas"), scale)
@@ -56,7 +56,7 @@ $ ->
   $(".card-overlay-button").on "click", (event) ->
     $("body").removeClass("birds-eye-mode panning-mode")
     currentScale = $(".canvas").data("scale")
-    scale = $(".canvas-container").width() / $(this).width()
+    scale = $(".viewport").width() / $(this).width()
     x = "#{$(this).closest(".card").offset().left / currentScale * -1}px"
     y = "#{$(this).closest(".card").offset().top / currentScale * -1}px"
     transformTo($(".canvas"), scale, x, y)
