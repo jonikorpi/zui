@@ -26,40 +26,45 @@ $ ->
   #   , scrollTime, "swing", ->
   #     #window.location.hash = target
 
-  transformTo = (element, scale=1, y=0, x=0, z=0) ->
-    element.css
-      "-webkit-transform": "scale(#{scale}) translate3d(#{y}, #{x}, #{z})"
-      "-moz-transform":    "scale(#{scale}) translate3d(#{y}, #{x}, #{z})"
-      "-o-transform":      "scale(#{scale}) translate3d(#{y}, #{x}, #{z})"
-      "-ms-transform":     "scale(#{scale}) translate3d(#{y}, #{x}, #{z})"
-      "transform":         "scale(#{scale}) translate3d(#{y}, #{x}, #{z})"
-    console.log "scale(#{scale}) translate3d(#{y}, #{x}, #{z})"
-    #console.log element.css("-webkit-transform")
-    console.log $(".canvas").data("scale")
+  viewport = $(".viewport")
+  canvas = $(".canvas")
+  cardsContainer = $(".cards-container")
 
-  $("#birds-eye").on "click", (event) ->
-    $("body").removeClass("birds-eye-mode panning-mode").addClass("birds-eye-mode")
-    currentScale = $(".canvas").data("scale")
-    scale = $(".viewport").width() / $(".canvas").width() * 0.944
-    transformTo($(".canvas"), scale)
-    $(".canvas").data("scale", scale)
+  zoomToFit = (target) ->
+    if $(".current-zoomable").length > 0
+      currentZoomable = $(".current-zoomable")
+    else
+      currentZoomable = viewport
 
-  $("#panning, .panning-overlay-button").on "click", (event) ->
-    $("body").removeClass("birds-eye-mode panning-mode").addClass("panning-mode")
-    currentScale = $(".canvas").data("scale")
-    scale = $(".viewport").width() / $(".card-wrapper").width() * 0.5
-    x = "#{event.pageX / currentScale}px"
-    y = "#{event.pageY / currentScale}px"
-    transformTo($(".canvas"), scale)
-    $(".canvas").data("scale", scale)
+    currentScale = Math.min( viewport.width() / currentZoomable.width(), viewport.height() / currentZoomable.height() )
+    scale =        Math.min( viewport.width() / target.width(),          viewport.height() / target.height()          )
 
-  $(".card-overlay-button").on "click", (event) ->
-    $("body").removeClass("birds-eye-mode panning-mode")
-    currentScale = $(".canvas").data("scale")
-    scale = $(".viewport").width() / $(this).width()
-    x = "#{$(this).closest(".card").offset().left / currentScale * -1}px"
-    y = "#{$(this).closest(".card").offset().top / currentScale * -1}px"
-    transformTo($(".canvas"), scale, x, y)
-    $(".canvas").data("scale", scale)
+    x = (target.offset().left / currentScale) * -1
+    y = (target.offset().top  / currentScale) * -1
+    z = 0
 
-  $("#birds-eye").click()
+    currentZoomable.removeClass("current-zoomable")
+    target.addClass("current-zoomable")
+
+    canvas.css
+      "-webkit-transform": "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
+      "-moz-transform":    "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
+      "-o-transform":      "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
+      "-ms-transform":     "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
+      "transform":         "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
+
+    console.log "currentScale: " + currentScale
+    console.log "scale(#{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
+
+  $(".zoomable-anchor").on "click", (event) ->
+    event.preventDefault()
+    zoomToFit( $(this).closest(".zoomable") )
+
+  $("#zoom-out").on "click", (event) ->
+    unless cardsContainer.hasClass("current-zoomable")
+      if $(".current-zoomable").parent().closest(".zoomable").length > 0
+        zoomToFit( $(".current-zoomable").parent().closest(".zoomable") )
+      else
+        zoomToFit( cardsContainer )
+
+  $("#zoom-out").click()
