@@ -4,7 +4,7 @@ title: ZUI Prototype Calamity
 
 .viewport
 
-  .canvas><
+  .canvas{"data-scale" => 1}><
 
     .cards-container><
 
@@ -14,11 +14,19 @@ title: ZUI Prototype Calamity
           .card.zoomable><
             %a.zoomable-anchor{href: "#"}
             .card-wrapper
-              %h1= rand(1..999)
-              .card.card-quarter.zoomable
+              %h1 Hello
+              .card.card-half.zoomable><
                 %a.zoomable-anchor{href: "#"}
                 .card-wrapper
-                  %h1= rand(1..999)
+                  %h1 Hello
+                  .card.card-half.zoomable><
+                    %a.zoomable-anchor{href: "#"}
+                    .card-wrapper
+                      %h1 Hello
+                      .card.card-half.zoomable><
+                        %a.zoomable-anchor{href: "#"}
+                        .card-wrapper
+                          %h1 Hello
 
       .card-group.zoomable><
         %a.zoomable-anchor{href: "#"}
@@ -28,7 +36,7 @@ title: ZUI Prototype Calamity
           .card.card-half.zoomable><
             %a.zoomable-anchor{href: "#"}
             .card-wrapper
-              %h1= rand(1..999)
+              %h1 Hello
 
       .card-group.zoomable><
         %a.zoomable-anchor{href: "#"}
@@ -38,7 +46,7 @@ title: ZUI Prototype Calamity
           .card.card-quarter.zoomable><
             %a.zoomable-anchor{href: "#"}
             .card-wrapper
-              %h1= rand(1..999)
+              %h1 Hello
 
 .overlay
   %button#zoom-out Zoom out

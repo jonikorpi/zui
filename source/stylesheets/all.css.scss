@@ -263,13 +263,15 @@ body {
 
 .card-wrapper {
   position: absolute;
-  left: 0; top: 0; right: 0; bottom: 0;
+  left: 0; top: 0;
+  width: $card-width;
+  height: $card-height;
   @include transform-origin(0%, 0%);
   @include transform-style(preserve-3d);
   @include translate3d(0,0,0);
   @include scale3d(1, 1, 1);
   @include transition(all 0.1s ease-out);
-  background: $highlight;
+  background: transparentize($aside, 0.854);
 
   .card-half & {
     @include scale3d(0.5, 0.5, 0.5);

@@ -31,19 +31,24 @@ $ ->
   cardsContainer = $(".cards-container")
 
   zoomToFit = (target) ->
-    if $(".current-zoomable").length > 0
-      currentZoomable = $(".current-zoomable")
-    else
-      currentZoomable = viewport
+    viewportWidth  = viewport[0].getBoundingClientRect().width
+    viewportHeight = viewport[0].getBoundingClientRect().height
+    canvasWidth    = canvas[0].getBoundingClientRect().width
+    canvasHeight   = canvas[0].getBoundingClientRect().height
+    targetWidth    = target[0].getBoundingClientRect().width
+    targetHeight   = target[0].getBoundingClientRect().height
 
-    currentScale = Math.min( viewport.width() / currentZoomable.width(), viewport.height() / currentZoomable.height() )
-    scale =        Math.min( viewport.width() / target.width(),          viewport.height() / target.height()          )
+    # currentScale = Math.min( viewportWidth/canvasWidth, viewportHeight/canvasHeight  )
+    # scale = Math.min( viewportWidth/targetWidth, viewportHeight/targetHeight ) #/ currentScale
 
-    x = (target.offset().left / currentScale) * -1
-    y = (target.offset().top  / currentScale) * -1
+    currentScale = viewportWidth/canvasWidth
+    scale = viewportWidth/targetWidth
+
+    x = (target[0].getBoundingClientRect().left * scale) * -1
+    y = (target[0].getBoundingClientRect().top  * scale) * -1
     z = 0
 
-    currentZoomable.removeClass("current-zoomable")
+    $(".current-zoomable").removeClass("current-zoomable")
     target.addClass("current-zoomable")
 
     canvas.css
@@ -53,7 +58,8 @@ $ ->
       "-ms-transform":     "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
       "transform":         "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
 
-    console.log "currentScale: " + currentScale
+    console.log "Fitting #{targetWidth}/#{targetHeight} to #{viewportWidth}/#{viewportHeight}"
+    console.log "currentScale is #{currentScale} and canvas is #{canvasWidth}/#{canvasHeight}"
     console.log "scale(#{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
 
   $(".zoomable-anchor").on "click", (event) ->
@@ -68,3 +74,5 @@ $ ->
         zoomToFit( cardsContainer )
 
   $("#zoom-out").click()
+  $(".card-wrapper h1").each ->
+    $(this).html( $(this).closest(".card")[0].getBoundingClientRect().width + "/" + $(this).closest(".card")[0].getBoundingClientRect().height )
