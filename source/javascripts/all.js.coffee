@@ -160,3 +160,8 @@ $ ->
   # Init
 
   $("#zoom-out").click()
+
+  # hammerOptions =
+  #   "pinch":
+  #     "enable": true
+  # viewport.hammer(hammerOptions).bind("pinchout", $("#zoom-out").click())
