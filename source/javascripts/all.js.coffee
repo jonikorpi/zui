@@ -56,6 +56,21 @@ $ ->
     else
       currentY = 0
 
+    # Pause any currently running transitions by giving canvas its own current transform values
+    # currentCanvasStyles = window.getComputedStyle(canvas[0])
+    # realCurrentTransform = currentCanvasStyles.getPropertyValue("-webkit-transform") || currentCanvasStyles.getPropertyValue("-moz-transform") || currentCanvasStyles.getPropertyValue("-o-transform") || currentCanvasStyles.getPropertyValue("-ms-transform") || currentCanvasStyles.getPropertyValue("transform")
+    # canvas.css
+    #   "-webkit-transition": "none"
+    #   "-moz-transition":    "none"
+    #   "-o-transition":      "none"
+    #   "-ms-transition":     "none"
+    #   "transition":         "none"
+    #   "-webkit-transform": realCurrentTransform
+    #   "-moz-transform":    realCurrentTransform
+    #   "-o-transform":      realCurrentTransform
+    #   "-ms-transform":     realCurrentTransform
+    #   "transform":         realCurrentTransform
+
     # Calculate current viewport, canvas and target positions
     viewportWidth  = viewport[0].getBoundingClientRect().width
     viewportHeight = viewport[0].getBoundingClientRect().height
