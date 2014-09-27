@@ -246,6 +246,7 @@ body {
   z-index: 35000;
   position: absolute;
   left: 0; top: 0; right: 0; bottom: 0;
+  background: transparentize($link, 0.91);
 
   &:hover {
     background: transparentize($link, 0.618);
@@ -281,7 +282,6 @@ body {
     @include scale3d(0.25, 0.25, 0.25);
   }
 
-
   h1 {
     position: absolute;
     left: 0; top: 0; right: 0; bottom: 0;
@@ -292,6 +292,10 @@ body {
     text-align: center;
     margin: auto;
   }
+}
+
+.current-zoomable > .card-wrapper > h1 {
+  color: $link;
 }
 
 .overlay {
