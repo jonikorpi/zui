@@ -149,7 +149,7 @@ $ ->
     clearTimeout @resizeTO if @resizeTO
     @resizeTO = setTimeout(->
       $(this).trigger "resizeEnd"
-    , 414)
+    , 618)
 
   $(window).bind "resizeEnd", ->
     console.log "------------------------------------------------"
