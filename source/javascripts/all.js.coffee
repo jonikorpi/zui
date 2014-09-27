@@ -72,7 +72,7 @@ $ ->
       "-ms-transform":     "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
       "transform":         "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
 
-    console.log "--------------------------"
+    console.log "------------------------------------------------"
     console.log "Current transform: #{currentScale}, #{currentX}px, #{currentY}px"
     console.log target
     console.log "Fitting #{targetWidth}/#{targetHeight} to #{viewportWidth}/#{viewportHeight}"
@@ -122,6 +122,7 @@ $ ->
     , 414)
 
   $(window).bind "resizeEnd", ->
+    console.log "------------------------------------------------"
     console.log "Transforming again due to window resizing!"
     zoomToFit( $(".current-zoomable") )
 
