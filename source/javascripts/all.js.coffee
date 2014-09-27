@@ -31,7 +31,7 @@ $ ->
 
   viewport = $(".viewport")
   canvas = $(".canvas")
-  cardsContainer = $(".cards-container")
+  initialZoomable = $(".initial-zoomable")
 
   baseTransitionTime = 0.333
   transitionEasing = "ease-out"
@@ -127,11 +127,13 @@ $ ->
   # Zoom out button
 
   $("#zoom-out").on "click", (event) ->
-    unless cardsContainer.hasClass("current-zoomable")
+    if initialZoomable.hasClass("current-zoomable")
+      zoomToFit( initialZoomable )
+    else
       if $(".current-zoomable").parent().closest(".zoomable").length > 0
         zoomToFit( $(".current-zoomable").parent().closest(".zoomable") )
       else
-        zoomToFit( cardsContainer )
+        zoomToFit( initialZoomable )
 
   #
   # Zoom out with ESC
