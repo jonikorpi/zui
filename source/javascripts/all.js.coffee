@@ -30,24 +30,41 @@ $ ->
   canvas = $(".canvas")
   cardsContainer = $(".cards-container")
 
-  zoomToFit = (target) ->
-    currentScale = canvas.data("scale")
-    currentY = canvas.data("y")
-    currentX = canvas.data("x")
+  #
+  # Zoom-to-fit function
 
+  zoomToFit = (target) ->
+    # Fetch previous transform variables, if they exist
+    if canvas.data("scale")
+      currentScale = canvas.data("scale")
+    else
+      currentScale = 1
+
+    if canvas.data("x")
+      currentX = canvas.data("x")
+    else
+      currentX = 0
+
+    if canvas.data("y")
+      currentY = canvas.data("y")
+    else
+      currentY = 0
+
+    # Calculate current viewport, canvas and target positions
     viewportWidth  = viewport[0].getBoundingClientRect().width
     viewportHeight = viewport[0].getBoundingClientRect().height
-    canvasWidth    = canvas[0].getBoundingClientRect().width  / currentScale
-    canvasHeight   = canvas[0].getBoundingClientRect().height / currentScale
+    canvasWidth    = canvas[0].getBoundingClientRect().width
+    canvasHeight   = canvas[0].getBoundingClientRect().height
     targetWidth    = target[0].getBoundingClientRect().width  / currentScale
     targetHeight   = target[0].getBoundingClientRect().height / currentScale
 
-    scale =        Math.min( viewportWidth/targetWidth, viewportHeight/targetHeight )
-
-    x = Math.round((target[0].getBoundingClientRect().left / currentScale) * -1 + currentX)
-    y = Math.round((target[0].getBoundingClientRect().top  / currentScale) * -1 + currentY)
+    # Calculate new scale and canvas position
+    scale = Math.min( viewportWidth/targetWidth, viewportHeight/targetHeight )
+    x = Math.round( (target[0].getBoundingClientRect().left / currentScale) * -1 + currentX )
+    y = Math.round( (target[0].getBoundingClientRect().top  / currentScale) * -1 + currentY )
     z = 0
 
+    # Set new scale and canvas position
     canvas.css
       "-webkit-transform": "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
       "-moz-transform":    "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
@@ -61,16 +78,25 @@ $ ->
     console.log "Fitting #{targetWidth}/#{targetHeight} to #{viewportWidth}/#{viewportHeight}"
     console.log "New transform: #{scale}, #{x}px, #{y}px"
 
-    $(".current-zoomable").removeClass("current-zoomable")
-    target.addClass("current-zoomable")
+    # Set .current-zoomable
+    unless $(".current-zoomable")[0] == target
+      $(".current-zoomable").removeClass("current-zoomable")
+      target.addClass("current-zoomable")
 
+    # Save transform variables for next transform
     canvas.data("scale", scale)
     canvas.data("x", x)
     canvas.data("y", y)
 
+  #
+  # Anchors on zoomables
+
   $(".zoomable-anchor").on "click", (event) ->
     event.preventDefault()
     zoomToFit( $(this).closest(".zoomable") )
+
+  #
+  # Zoom out button
 
   $("#zoom-out").on "click", (event) ->
     unless cardsContainer.hasClass("current-zoomable")
@@ -79,8 +105,27 @@ $ ->
       else
         zoomToFit( cardsContainer )
 
-  $("#zoom-out").click()
+  #
+  # Zoom out with ESC
 
   $(document).on "keyup", (event) ->
     if event.keyCode == 27
       $("#zoom-out").click()
+
+  #
+  # Rezoom on resize
+
+  $(window).resize ->
+    clearTimeout @resizeTO if @resizeTO
+    @resizeTO = setTimeout(->
+      $(this).trigger "resizeEnd"
+    , 414)
+
+  $(window).bind "resizeEnd", ->
+    console.log "Transforming again due to window resizing!"
+    zoomToFit( $(".current-zoomable") )
+
+  #
+  # Init
+
+  $("#zoom-out").click()
