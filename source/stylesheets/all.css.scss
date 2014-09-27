@@ -172,14 +172,13 @@ code {
 
 /////////////////////////////////////////////////////////
 
+//
+// Zooming-related
+
 html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-}
-
-body {
-
 }
 
 .viewport {
@@ -191,7 +190,7 @@ body {
 }
 
 .canvas {
-  @include transition(all 0.414s ease-out);
+  @include transition(all 0.262s ease-out);
   @include transform-origin(0, 0);
   @include transform-style(preserve-3d);
   @include backface-visibility(hidden);
@@ -201,6 +200,41 @@ body {
   @include scale(1);
   display: inline-block;
 }
+
+.zoomable {
+  position: relative;
+
+  &.current-zoomable,
+  .current-zoomable & {
+
+  }
+}
+
+.zoomable-anchor {
+  display: none;
+  cursor: -webkit-zoom-in;
+  cursor: zoom-in;
+  z-index: 35000;
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: transparentize($link, 0.91);
+
+  &:hover {
+    background: transparentize($link, 0.618);
+  }
+
+  .current-zoomable .zoomable & {
+    display: block;
+  }
+
+  .current-zoomable > &,
+  .current-zoomable .zoomable .zoomable & {
+    display: none;
+  }
+}
+
+//
+// Card layout
 
 .cards-container {
   display: inline-block;
@@ -236,29 +270,6 @@ body {
   &.card-quarter {
     width:  $card-width  * 0.25;
     height: $card-height * 0.25;
-  }
-}
-
-.zoomable-anchor {
-  display: none;
-  cursor: -webkit-zoom-in;
-  cursor: zoom-in;
-  z-index: 35000;
-  position: absolute;
-  left: 0; top: 0; right: 0; bottom: 0;
-  background: transparentize($link, 0.91);
-
-  &:hover {
-    background: transparentize($link, 0.618);
-  }
-
-  .current-zoomable .zoomable & {
-    display: block;
-  }
-
-  .current-zoomable > &,
-  .current-zoomable .zoomable .zoomable & {
-    display: none;
   }
 }
 

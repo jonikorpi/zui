@@ -80,3 +80,7 @@ $ ->
         zoomToFit( cardsContainer )
 
   $("#zoom-out").click()
+
+  $(document).on "keyup", (event) ->
+    if event.keyCode == 27
+      $("#zoom-out").click()
