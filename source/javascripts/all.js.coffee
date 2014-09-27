@@ -33,7 +33,7 @@ $ ->
   canvas = $(".canvas")
   cardsContainer = $(".cards-container")
 
-  baseTransitionTime = 0.414
+  baseTransitionTime = 0.333
   transitionEasing = "ease-out"
 
   #
