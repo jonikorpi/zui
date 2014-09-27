@@ -348,5 +348,14 @@ html, body {
     border: 0;
     background: $link;
     color: lighten($link, 38.2%);
+    font-size: 1.5em;
+
+    &:hover, &:focus {
+      background: lighten($link, 14.6%);
+    }
+
+    &:active {
+      background: darken($link, 9%);
+    }
   }
 }
