@@ -44,7 +44,7 @@ textarea { resize: vertical; }
 // pixels to ems & baselines to ems
 
 $font-size: 16;
-$line-height: 24;
+$line-height: 20;
 
 @function em($pixels, $context-font-size: $font-size) {
  @return ($pixels / $context-font-size) * 1em;
@@ -63,6 +63,8 @@ $line-height: 24;
 
 $card-width: 100vw;
 $card-height: 100vh;
+$card-min: 100vmin;
+$card-max: 100vmax;
 $card-gap: 2vw;
 
 //
@@ -110,7 +112,7 @@ $aside:     hsl($hue-main, 5.6%, 50%);
 $body:      hsl($hue-main, 9%, 61.8%);
 $emphasis:  hsl($hue-main, 14.6%, 76.4%);
 
-$link: hsl($hue-618, 85.4%, 61.8%);
+$link: hsl($hue-618, 76.4%, 61.8%);
 
 //
 // Media queries
@@ -136,7 +138,7 @@ $xxxxxxl:  "screen and (min-width: 2000px)";
 body {
   @include text-font;
   font-size: em($font-size, 16);
-  line-height: lines(1);
+  line-height: $line-height/$font-size;
   background: $background;
   color: $body;
   -webkit-tap-highlight-color: transparentize($link, 0.5);
@@ -216,7 +218,7 @@ html, body {
   z-index: 35000;
   position: absolute;
   left: 0; top: 0; right: 0; bottom: 0;
-  background: transparentize($link, 0.91);
+  @include transition(background-color 0.16s ease-out);
 
   &:hover {
     background: transparentize($link, 0.618);
@@ -237,20 +239,27 @@ html, body {
 
 .cards-container {
   display: inline-block;
+  white-space: nowrap;
 }
 
 .card-group {
-  white-space: nowrap;
-  display: inline-block;
-  position: relative;
+
 }
 
 .card-group-heading {
-  margin: $card-gap*2 $card-gap $card-gap;
+  margin: $card-gap*3 $card-gap*2 $card-gap*2;
+  white-space: normal;
+  text-align: center;
 
   h1 {
-    font-size: $card-height * 0.146;
+    font-size: $card-min * 0.146;
     line-height: 1;
+  }
+
+  p {
+    font-size: $card-min * 0.09;
+    color: $aside;
+    font-style: italic;
   }
 }
 
@@ -277,12 +286,14 @@ html, body {
   left: 0; top: 0;
   width: $card-width;
   height: $card-height;
+  @include box-sizing(border-box);
   @include transform-origin(0%, 0%);
   @include transform-style(preserve-3d);
   @include translate3d(0,0,0);
   @include scale3d(1, 1, 1);
   @include transition(all 0.1s ease-out);
-  background: transparentize($aside, 0.854);
+  background: $highlight;
+  border: 0.333vw solid $border;
 
   .card-half & {
     @include scale3d(0.5, 0.5, 0.5);
@@ -295,13 +306,34 @@ html, body {
   h1 {
     position: absolute;
     left: 0; top: 0; right: 0; bottom: 0;
-    font-size: $card-height * 0.1;
+    z-index: 100;
+    font-size: $card-min * 0.09;
     line-height: 1;
     height: 1em;
     width: 5em;
     text-align: center;
     margin: auto;
+    white-space: normal;
+    font-weight: normal;
+    color: $aside;
+
+    @media #{$m} {
+      font-style: italic;
+    }
+
+    @media #{$l} {
+      font-weight: bold;
+      font-style: normal;
+    }
   }
+}
+
+.current-zoomable .card h1 {
+  color: $emphasis;
+}
+
+.current-zoomable .card .card h1 {
+  color: $aside;
 }
 
 .current-zoomable > .card-wrapper > h1 {
@@ -311,4 +343,10 @@ html, body {
 .overlay {
   position: absolute;
   left: 0; top: 0;
+
+  button {
+    border: 0;
+    background: $link;
+    color: lighten($link, 38.2%);
+  }
 }
