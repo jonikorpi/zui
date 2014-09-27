@@ -190,7 +190,6 @@ html, body {
 }
 
 .canvas {
-  @include transition(all 0.333s ease-out);
   @include transform-origin(0, 0);
   @include transform-style(preserve-3d);
   @include backface-visibility(hidden);

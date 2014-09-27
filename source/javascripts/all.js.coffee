@@ -26,9 +26,15 @@ $ ->
   #   , scrollTime, "swing", ->
   #     #window.location.hash = target
 
+  #
+  # Config
+
   viewport = $(".viewport")
   canvas = $(".canvas")
   cardsContainer = $(".cards-container")
+
+  baseTransitionTime = 0.414
+  transitionEasing = "ease-out"
 
   #
   # Zoom-to-fit function
@@ -58,14 +64,20 @@ $ ->
     targetWidth    = target[0].getBoundingClientRect().width  / currentScale
     targetHeight   = target[0].getBoundingClientRect().height / currentScale
 
-    # Calculate new scale and canvas position
+    # Calculate new scale, canvas position and transition time
     scale = Math.min( viewportWidth/targetWidth, viewportHeight/targetHeight )
     x = Math.round( (target[0].getBoundingClientRect().left / currentScale) * -1 + currentX )
     y = Math.round( (target[0].getBoundingClientRect().top  / currentScale) * -1 + currentY )
     z = 0
+    transitionTime = baseTransitionTime
 
     # Set new scale and canvas position
     canvas.css
+      "-webkit-transition": "all #{transitionTime}s #{transitionEasing}"
+      "-moz-transition":    "all #{transitionTime}s #{transitionEasing}"
+      "-o-transition":      "all #{transitionTime}s #{transitionEasing}"
+      "-ms-transition":     "all #{transitionTime}s #{transitionEasing}"
+      "transition":         "all #{transitionTime}s #{transitionEasing}"
       "-webkit-transform": "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
       "-moz-transform":    "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
       "-o-transform":      "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
@@ -73,10 +85,11 @@ $ ->
       "transform":         "scale3d(#{scale}, #{scale}, #{scale}) translate3d(#{x}px, #{y}px, #{z}px)"
 
     console.log "------------------------------------------------"
-    console.log "Current transform: #{currentScale}, #{currentX}px, #{currentY}px"
     console.log target
-    console.log "Fitting #{targetWidth}/#{targetHeight} to #{viewportWidth}/#{viewportHeight}"
+    console.log "Fitting #{targetWidth}/#{targetHeight} into #{viewportWidth}/#{viewportHeight}"
+    console.log "Current transform: #{currentScale}, #{currentX}px, #{currentY}px"
     console.log "New transform: #{scale}, #{x}px, #{y}px"
+    console.log "During #{transitionTime}s with #{transitionEasing}"
 
     # Set .current-zoomable
     unless $(".current-zoomable")[0] == target
