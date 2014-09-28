@@ -184,7 +184,7 @@ html, body {
 }
 
 .viewport {
-  @include perspective($card-width);
+  @include perspective(1000);
   @include perspective-origin(left top);
   height: 100%;
   width: 100%;
@@ -197,7 +197,6 @@ html, body {
   @include backface-visibility(hidden);
   position: absolute;
   left: 0; top: 0;
-  @include translate3d(0,0,0);
   @include scale(1);
   display: inline-block;
 }

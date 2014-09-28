@@ -27,6 +27,12 @@ $ ->
   #     #window.location.hash = target
 
   #
+  # Javascript srsly
+
+  round = (value, decimals) ->
+    Number Math.round(value + "e" + decimals) + "e-" + decimals
+
+  #
   # Config
 
   viewport = $(".viewport")
@@ -39,7 +45,7 @@ $ ->
   #
   # Zoom-to-fit function
 
-  zoomToFit = (target) ->
+  zoomToFit = (target, duration = baseTransitionTime, setHash = true) ->
     # Fetch previous transform variables, if they exist
     if canvas.data("scale")
       currentScale = canvas.data("scale")
@@ -72,19 +78,25 @@ $ ->
     #   "transform":         realCurrentTransform
 
     # Calculate current viewport, canvas and target positions
-    viewportWidth  = viewport[0].getBoundingClientRect().width
-    viewportHeight = viewport[0].getBoundingClientRect().height
+    viewportWidth  = viewport.width()
+    viewportHeight = viewport.height()
     canvasWidth    = canvas[0].getBoundingClientRect().width
     canvasHeight   = canvas[0].getBoundingClientRect().height
     targetWidth    = target[0].getBoundingClientRect().width  / currentScale
     targetHeight   = target[0].getBoundingClientRect().height / currentScale
+    targetLeft     = target[0].getBoundingClientRect().left
+    targetTop      = target[0].getBoundingClientRect().top
 
     # Calculate new scale, canvas position and transition time
     scale = Math.min( viewportWidth/targetWidth, viewportHeight/targetHeight )
-    x = Math.round( (target[0].getBoundingClientRect().left / currentScale) * -1 + currentX )
-    y = Math.round( (target[0].getBoundingClientRect().top  / currentScale) * -1 + currentY )
+
+    # Calculate left/top positions
+    targetOffsetX  = 0#(viewportWidth  - (targetWidth)  ) * 0.5
+    targetOffsetY  = 0#(viewportHeight - (targetHeight) ) * 0.5
+    x = round( (targetLeft / currentScale) * -1 + currentX + targetOffsetX, 2 )
+    y = round( (targetTop  / currentScale) * -1 + currentY + targetOffsetY, 2 )
     z = 0
-    transitionTime = baseTransitionTime
+    transitionTime = duration
 
     # Set new scale and canvas position
     canvas.css
@@ -102,8 +114,9 @@ $ ->
     console.log "------------------------------------------------"
     console.log target
     console.log "Fitting #{targetWidth}/#{targetHeight} into #{viewportWidth}/#{viewportHeight}"
-    console.log "Current transform: #{currentScale}, #{currentX}px, #{currentY}px"
-    console.log "New transform: #{scale}, #{x}px, #{y}px"
+    console.log "Current transform: [#{currentScale}, #{currentX}px, #{currentY}px]"
+    console.log "New transform: [#{scale}, #{x}px, #{y}px]"
+    console.log "Offsetting by [#{targetOffsetX}, #{targetOffsetY}]"
     console.log "During #{transitionTime}s with #{transitionEasing}"
 
     # Set .current-zoomable
@@ -115,6 +128,18 @@ $ ->
     canvas.data("scale", scale)
     canvas.data("x", x)
     canvas.data("y", y)
+
+    # If zoomable has an ID, set it as the URL hash
+    if setHash
+      targetID = target.attr("id")
+      if targetID
+        window.location.hash = targetID
+        console.log "Setting hash to #{targetID}"
+      else
+        window.location.hash = ""
+        console.log "Clearing hash"
+    else
+      console.log "Not setting a hash"
 
   #
   # Anchors on zoomables
@@ -159,7 +184,14 @@ $ ->
   #
   # Init
 
-  $("#zoom-out").click()
+  # Initial zoom
+  initialHash = window.location.hash.substr(1)
+  if initialHash
+    zoomToFit( $("##{initialHash}"), 0, false )
+  else
+    zoomToFit( initialZoomable )
+
+
 
   # hammerOptions =
   #   "pinch":
